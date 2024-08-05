@@ -21,7 +21,9 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
   
   const [lastViewedPhoto, setLastViewedPhoto] = useLastViewedPhoto();
   const lastViewedPhotoRef = useRef<HTMLAnchorElement>(null);
-  const [user, setUser] = useState<Boolean>(null)
+  const [isAdmin, setIsAdmin] = useState<Boolean>(null)
+  const [signedIn, setSignedIn] = useState<Boolean>(false)
+  const [user, setUser] = useState<User>(null)
   
   const handleSignIn = () => {
     const auth = getAuth();
@@ -32,7 +34,9 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
         const user = result.user;
         
         console.log(user)
-        setUser(user.email=="ayishazebap@gmail.com")
+        setSignedIn(true)
+        setIsAdmin(user.email=="ayishazebap@gmail.com")
+        setUser(user)
       })
       .catch((error) => {
       });
@@ -94,7 +98,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
               rel="noreferrer"
               onClick={handleSignIn}
             >
-              {user ? "Hi minuuuuuuuuuu" : "Hello"}
+              {signedIn ? isAdmin ? "Hi minuuuuuuuuuu" : `Hello ${user.displayName.split(" ")[0]}` : "Say Hi"}
             </button>
           </div>
           
