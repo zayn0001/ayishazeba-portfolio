@@ -3,21 +3,40 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useRef } from "react";
-import Bridge from "../components/Icons/Bridge";
-import Logo from "../components/Icons/Logo";
+import { useEffect, useRef, useState } from "react";
+import { getAuth, signInWithPopup, GoogleAuthProvider, User } from "firebase/auth";
 import Modal from "../components/Modal";
 import cloudinary from "../utils/cloudinary";
 import getBase64ImageUrl from "../utils/generateBlurPlaceholder";
 import type { ImageProps } from "../utils/types";
 import { useLastViewedPhoto } from "../utils/useLastViewedPhoto";
+import 'firebase/auth';
+import "../utils/config";
 
 const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
+  
   const router = useRouter();
   const { photoId } = router.query;
+  const provider = new GoogleAuthProvider();
+  
   const [lastViewedPhoto, setLastViewedPhoto] = useLastViewedPhoto();
-
   const lastViewedPhotoRef = useRef<HTMLAnchorElement>(null);
+  const [user, setUser] = useState<Boolean>(null)
+  
+  const handleSignIn = () => {
+    const auth = getAuth();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+        
+        console.log(user)
+        setUser(user.email=="ayishazebap@gmail.com")
+      })
+      .catch((error) => {
+      });
+  }
 
   useEffect(() => {
     // This effect keeps track of the last viewed photo in the modal to keep the index page in sync when the user navigates back
@@ -70,14 +89,13 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
             <p className="max-w-[40ch] text-white/75 sm:max-w-[32ch]">
               This portfolio showcases my best works as a 2025 NIFT graduate.
             </p>
-            <a
+            <button
               className="pointer z-10 mt-6 rounded-lg border border-white bg-white px-3 py-2 text-sm font-semibold text-black transition hover:bg-white/10 hover:text-white md:mt-4"
-              href="/admin"
-              target="_blank"
               rel="noreferrer"
+              onClick={handleSignIn}
             >
-              Hello
-            </a>
+              {user ? "Hi minuuuuuuuuuu" : "Hello"}
+            </button>
           </div>
           
           {images.map(({ id, public_id, format, blurDataUrl }) => (
