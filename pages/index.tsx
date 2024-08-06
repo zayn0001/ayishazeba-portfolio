@@ -154,7 +154,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
               Portfolio
             </h1>
             </div>
-            <div>
+            <>
             <p className="max-w-[40ch] text-white/75 sm:max-w-[32ch]">
               This portfolio showcases my best works as a 2025 NIFT graduate.
             </p>
@@ -165,7 +165,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
             >
               {signedIn ? isAdmin ? "Hi Minuuuuuuuuuu" : `Hello ${user.displayName.split(" ")[0]}` : "Say Hi"}
             </button>
-            </div>
+            </>
             
           </div>          
           
