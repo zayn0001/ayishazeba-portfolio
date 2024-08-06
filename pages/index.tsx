@@ -196,7 +196,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
               />
             </Link>
           ))}
-          { signedIn &&
+          { signedIn && isAdmin && 
             <div className="after:content relative mb-5 flex h-[629px] flex-col items-center justify-center gap-4 overflow-hidden rounded-lg bg-white/10 px-6 pb-16 text-center text-white shadow-highlight after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight lg:pt-0">
               <h1 style={{fontSize:36}}>Upload Images</h1>
               <input type="file" multiple onChange={handleImageChange} />
@@ -255,7 +255,7 @@ export async function getStaticProps() {
   for (let i = 0; i < reducedResults.length; i++) {
     reducedResults[i].blurDataUrl = imagesWithBlurDataUrls[i];
   }
-
+  console.log(reducedResults)
   return {
     props: {
       images: reducedResults,
