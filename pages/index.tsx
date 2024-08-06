@@ -3,8 +3,8 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
-import { getAuth, signInWithPopup, GoogleAuthProvider, User } from "firebase/auth";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { getAuth, signInWithPopup, GoogleAuthProvider, User, onAuthStateChanged } from "firebase/auth";
 import Modal from "../components/Modal";
 import cloudinary from "../utils/cloudinary";
 import getBase64ImageUrl from "../utils/generateBlurPlaceholder";
@@ -12,6 +12,8 @@ import type { ImageProps } from "../utils/types";
 import { useLastViewedPhoto } from "../utils/useLastViewedPhoto";
 import 'firebase/auth';
 import "../utils/config";
+import axios from "axios"
+
 
 const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
   
@@ -24,6 +26,68 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
   const [isAdmin, setIsAdmin] = useState<Boolean>(null)
   const [signedIn, setSignedIn] = useState<Boolean>(false)
   const [user, setUser] = useState<User>(null)
+
+
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const [loading, setLoading] = useState(false);
+
+
+  const handleImageChange = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setSelectedImages(Array.from(e.target.files));
+    }
+  };
+
+
+  const handleUpload = async () => {
+    if (images.length === 0) return;
+
+    setLoading(true);
+
+    const uploadPromises = selectedImages.map(async (newimage) => {
+      const formData = new FormData();
+      formData.append('file', newimage);
+      formData.append("upload_preset", "kztqwjxm");
+      formData.append('folder', "AyishaZeba");
+
+      try {
+        const response = await axios.post(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`, formData);
+        return response.data.secure_url;
+      } catch (err) {
+        throw new Error(err.message);
+      }
+    });
+
+    try {
+      const urls = await Promise.all(uploadPromises);
+    } catch (err: any) {
+    } finally {
+      setLoading(false);
+      setTimeout(() => router.reload(), 1000);
+    }
+  };
+
+  const checkAutoSignIn = () => {
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const token = localStorage.getItem("token");
+        if (token) {
+          setSignedIn(true);
+          setIsAdmin(user.email === "mishal0404k@gmail.com");
+          setUser(user);
+          console.log("Auto signed-in user:", user);
+        }
+      }
+    });
+  };
+
+  useEffect(() => {
+    checkAutoSignIn();
+  }, []);
+
+  
+
   
   const handleSignIn = () => {
     const auth = getAuth();
@@ -32,7 +96,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
         const credential = GoogleAuthProvider.credentialFromResult(result);
         const token = credential.accessToken;
         const user = result.user;
-        
+        localStorage.setItem("token", token)
         console.log(user)
         setSignedIn(true)
         setIsAdmin(user.email=="ayishazebap@gmail.com")
@@ -43,7 +107,6 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
   }
 
   useEffect(() => {
-    // This effect keeps track of the last viewed photo in the modal to keep the index page in sync when the user navigates back
     if (lastViewedPhoto && !photoId) {
       lastViewedPhotoRef.current.scrollIntoView({ block: "center" });
       setLastViewedPhoto(null);
@@ -78,6 +141,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
               <span className="flex max-h-full max-w-full items-center justify-center">
                 {
                 //<Bridge />
+                
                 }
               </span>
               <span className="absolute left-0 right-0 bottom-0 h-[400px] bg-gradient-to-b from-black/0 via-black to-black"></span>
@@ -98,9 +162,9 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
               rel="noreferrer"
               onClick={handleSignIn}
             >
-              {signedIn ? isAdmin ? "Hi minuuuuuuuuuu" : `Hello ${user.displayName.split(" ")[0]}` : "Say Hi"}
+              {signedIn ? isAdmin ? "Hi Minuuuuuuuuuu" : `Hello ${user.displayName.split(" ")[0]}` : "Say Hi"}
             </button>
-          </div>
+          </div>          
           
           {images.map(({ id, public_id, format, blurDataUrl }) => (
             <Link
@@ -127,6 +191,17 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
               />
             </Link>
           ))}
+          { signedIn && isAdmin &&
+            <div className="after:content relative mb-5 flex h-[629px] flex-col items-center justify-center gap-4 overflow-hidden rounded-lg bg-white/10 px-6 pb-16 text-center text-white shadow-highlight after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight lg:pt-0">
+              <h1 style={{fontSize:36}}>Upload Images</h1>
+              <input type="file" multiple onChange={handleImageChange} />
+              <button className="pointer z-10 mt-6 rounded-lg border border-white bg-white px-3 py-2 text-sm font-semibold text-black transition hover:bg-white/10 hover:text-white md:mt-4"
+                      rel="noreferrer" onClick={handleUpload} disabled={loading}>
+                {loading ? 'Uploading...' : 'Upload Image'}
+              </button>
+          </div>
+
+          }
         </div>
       </main>
       <footer className="p-6 text-center text-white/80 sm:p-12">  

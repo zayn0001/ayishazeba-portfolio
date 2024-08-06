@@ -1,4 +1,9 @@
 module.exports = {
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false };
+
+    return config;
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     domains: ['res.cloudinary.com'],
