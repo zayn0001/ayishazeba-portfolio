@@ -52,6 +52,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
 
       try {
         const response = await axios.post(`https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/upload`, formData);
+        console.log(response.data)
         return response.data.secure_url;
       } catch (err) {
         throw new Error(err.message);
@@ -83,6 +84,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
   };
 
   useEffect(() => {
+    console.log(images)
     checkAutoSignIn();
   }, []);
 
@@ -136,7 +138,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
           />
         )}
         <div className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4">
-          <div className="after:content relative flex h-[629px] flex-col items-center justify-between gap-4 overflow-hidden rounded-lg bg-white/20 px-6  text-center text-white shadow-highlight after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight py-16">
+          <div className="after:content relative flex mb-5 h-[629px] flex-col items-center justify-between gap-4 overflow-hidden rounded-lg bg-white/20 px-6  text-center text-white shadow-highlight after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight py-16">
             <div className="absolute inset-0 flex items-center justify-center opacity-20">
               <span style={{height: "-webkit-fill-available"}} className="flex max-h-full max-w-full items-center justify-center">
                 {
