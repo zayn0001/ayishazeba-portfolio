@@ -74,7 +74,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
         const token = localStorage.getItem("token");
         if (token) {
           setSignedIn(true);
-          setIsAdmin(user.email === "mishal0404k@gmail.com");
+          setIsAdmin(user.email === "ayishazebap@gmail.com");
           setUser(user);
           console.log("Auto signed-in user:", user);
         }
