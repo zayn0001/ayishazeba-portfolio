@@ -136,24 +136,25 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
           />
         )}
         <div className="columns-1 gap-4 sm:columns-2 xl:columns-3 2xl:columns-4">
-          <div className="after:content relative mb-5 flex h-[629px] flex-col items-center justify-end gap-4 overflow-hidden rounded-lg bg-white/10 px-6 pb-16 pt-64 text-center text-white shadow-highlight after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight lg:pt-0">
+          <div className="after:content relative flex h-[629px] flex-col items-center justify-between gap-4 overflow-hidden rounded-lg bg-white/20 px-6  text-center text-white shadow-highlight after:pointer-events-none after:absolute after:inset-0 after:rounded-lg after:shadow-highlight py-16">
             <div className="absolute inset-0 flex items-center justify-center opacity-20">
-              <span className="flex max-h-full max-w-full items-center justify-center">
+              <span style={{height: "-webkit-fill-available"}} className="flex max-h-full max-w-full items-center justify-center">
                 {
                 //<Bridge />
-                
+                <img src="ayisha.jpeg" style={{objectFit:"cover", height:"100%"}}></img>
                 }
               </span>
-              <span className="absolute left-0 right-0 bottom-0 h-[400px] bg-gradient-to-b from-black/0 via-black to-black"></span>
+              <span className="absolute left-0 right-0 bottom-0 h-[150px] bg-gradient-to-b from-white/0 via-grey to-black"></span>
+              <span className="absolute left-0 right-0 top-0 h-[150px] bg-gradient-to-b from-white/0 via-grey to-black" style={{transform: "rotate(180deg)"}}></span>
             </div>
+            <div>
             <h1 style={{fontSize:48}}>Ayisha</h1>
             <h1 style={{fontSize:48, marginTop:-30}}>Zeba's</h1>
-            {
-              //<Logo />
-              }
             <h1 className=" mb-4 text-base font-bold uppercase tracking-widest">
               Portfolio
             </h1>
+            </div>
+            <div>
             <p className="max-w-[40ch] text-white/75 sm:max-w-[32ch]">
               This portfolio showcases my best works as a 2025 NIFT graduate.
             </p>
@@ -164,6 +165,8 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
             >
               {signedIn ? isAdmin ? "Hi Minuuuuuuuuuu" : `Hello ${user.displayName.split(" ")[0]}` : "Say Hi"}
             </button>
+            </div>
+            
           </div>          
           
           {images.map(({ id, public_id, format, blurDataUrl }) => (
