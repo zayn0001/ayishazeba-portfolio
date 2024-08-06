@@ -40,7 +40,7 @@ const Home: NextPage = ({ images }: { images: ImageProps[] }) => {
 
 
   const handleUpload = async () => {
-    if (images.length === 0) return;
+    if (selectedImages.length === 0) return;
 
     setLoading(true);
 
